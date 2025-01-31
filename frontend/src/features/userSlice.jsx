@@ -5,10 +5,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post(
-        "http://localhost:8000/user/login",
-        userData
-      );
+      const res = await axiosInstance.post("/user/login", userData);
       localStorage.setItem("firstLogin", true); // Store login state in localStorage
       //   console.log(localStorage.getItem("firstLogin"));
       //   console.log("jhskhkjshkjhhhhhhhh");
@@ -24,7 +21,7 @@ export const fetchUser = createAsyncThunk(
   "user/fetchUser",
   async (token, { rejectWithValue }) => {
     try {
-      const res = await axios.get("http://localhost:8000/user/infor", {
+      const res = await axiosInstance.get("/user/infor", {
         headers: { Authorization: token },
       });
       return res.data;
@@ -36,7 +33,7 @@ export const fetchUser = createAsyncThunk(
 
 // Logout User
 export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
-  await axios.get("http://localhost:8000/user/logout");
+  await axiosInstance.get("/user/logout");
   localStorage.removeItem("firstLogin");
 });
 

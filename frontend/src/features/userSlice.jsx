@@ -3,13 +3,17 @@ import axiosInstance from "../api";
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
-  async (userData, { rejectWithValue }) => {
+  async (userData, { dispatch, rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/user/login", userData);
+      const accessToken = res.data.accesstoken; // Assuming the access token is in res.data.accessToken
+
       localStorage.setItem("firstLogin", true); // Store login state in localStorage
       //   console.log(localStorage.getItem("firstLogin"));
       //   console.log("jhskhkjshkjhhhhhhhh");
-      return res.data;
+      // Fetch user data immediately after login
+      dispatch(fetchUser(accessToken));
+      return { accessToken };
     } catch (err) {
       return rejectWithValue(err.response?.data?.msg || "Login failed");
     }
@@ -24,6 +28,7 @@ export const fetchUser = createAsyncThunk(
       const res = await axiosInstance.get("/user/infor", {
         headers: { Authorization: token },
       });
+      console.log(res);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.msg || "Failed to fetch user");
@@ -40,11 +45,8 @@ export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    isLogged: false,
-    // user: (() => {
-    //   const userData = localStorage.getItem("user");
-    //   return userData ? JSON.parse(userData) : null; // Safely parse or return null
-    // })(),
+    isLogged: localStorage.getItem("accessToken") ? true : false,
+    accessToken: localStorage.getItem("accessToken") || null,
     user: null,
     loading: false,
     error: null,
@@ -59,11 +61,9 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isLogged = true;
-        state.user = {
-          ...action.payload.user,
-          accesstoken: action.payload.accesstoken,
-        };
-        localStorage.setItem("accesstoken", action.payload.accesstoken);
+
+        state.accessToken = action.payload.accessToken; // Store access token
+        localStorage.setItem("accessToken", action.payload.accessToken);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

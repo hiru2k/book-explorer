@@ -10,7 +10,7 @@ app.use(cookieParser());
 app.use(cors());
 
 // connect to mongodb
-const URI = "";
+const URI = process.env.MONGODB_URL;
 
 mongoose
   .connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -21,7 +21,7 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-const PORT = 8000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log("server is up and running", PORT);

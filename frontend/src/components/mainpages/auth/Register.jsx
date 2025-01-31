@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../api";
 
 function Register() {
@@ -8,6 +8,7 @@ function Register() {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const onChangeInput = (e) => {
     const { name, value } = e.target;
@@ -21,7 +22,7 @@ function Register() {
         ...user,
       });
       localStorage.setItem("firstLogin", true);
-      window.location.href = "/";
+      navigate("/login");
     } catch (err) {
       alert(err.response.data.msg);
     }

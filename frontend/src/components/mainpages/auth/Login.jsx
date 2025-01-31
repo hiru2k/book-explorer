@@ -21,12 +21,13 @@ function Login() {
 
   const loginSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(user));
+    try {
+      await dispatch(loginUser(user));
+      navigate("/"); // Navigate after successful login
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
-
-  if (isLogged) {
-    window.location.href = "/";
-  }
 
   return (
     <div className="flex justify-center items-center min-h-screen">

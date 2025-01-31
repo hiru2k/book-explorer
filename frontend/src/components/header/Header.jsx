@@ -42,7 +42,7 @@ function Header() {
                     to="/my-books"
                     className="hover:text-yellow-400 transition-colors duration-300"
                   >
-                    My Products
+                    My Books
                   </Link>
                 </li>
                 <li>

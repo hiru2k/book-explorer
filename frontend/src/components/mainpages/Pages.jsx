@@ -4,6 +4,8 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "./auth/Login";
 import Register from "./auth/Register";
+import Home from "./home/Home";
+import NotFound from "./utils/not_found/NotFound";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -22,6 +24,7 @@ function Pages() {
 
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={isLogged ? <NotFound /> : <Login />} />
       <Route
         path="/register"

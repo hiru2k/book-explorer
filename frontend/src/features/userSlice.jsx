@@ -45,8 +45,8 @@ export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    isLogged: localStorage.getItem("accessToken") ? true : false,
-    accessToken: localStorage.getItem("accessToken") || null,
+    isLogged: false,
+    accessToken: null,
     user: null,
     loading: false,
     error: null,

@@ -39,7 +39,7 @@ export const createBook = createAsyncThunk(
       });
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.msg);
+      return rejectWithValue(error.response?.data?.msg || "An error occurred"); // Pass error message as a string
     }
   }
 );

@@ -2,8 +2,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaTrash, FaEye, FaEdit } from "react-icons/fa";
-import { deleteBook } from "../../../../features/bookSlice";
-import useToast from "../../../../hooks/useToast";
+import { deleteBook } from "../features/bookSlice";
+import useToast from "../hooks/useToast";
 
 function BookItem({ book }) {
   const dispatch = useDispatch();

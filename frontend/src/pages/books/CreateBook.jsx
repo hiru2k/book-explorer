@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  fetchBooks,
-  createBook,
-  updateBook,
-} from "../../../features/bookSlice";
-import { fetchGenres } from "../../../features/genreSlice";
-import useToast from "../../../hooks/useToast";
+import { fetchBooks, createBook, updateBook } from "../../features/bookSlice";
+import { fetchGenres } from "../../features/genreSlice";
+import useToast from "../../hooks/useToast";
 
 const initialState = {
   book_id: "",

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
-import NotFound from "./utils/not_found/NotFound";
+import NotFound from "./NotFound";
 import Home from "./home/Home";
 import DetailBook from "./books/DetailBook";
 import CreateBook from "./books/CreateBook";

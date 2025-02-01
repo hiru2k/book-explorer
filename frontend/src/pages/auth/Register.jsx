@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../../../api";
 import { useDispatch } from "react-redux";
-import { registerUser } from "../../../features/userSlice";
-import useToast from "../../../hooks/useToast";
+import { registerUser } from "../../features/userSlice";
+import useToast from "../../hooks/useToast";
 
 function Register() {
   const dispatch = useDispatch();

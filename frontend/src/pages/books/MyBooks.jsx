@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBooks } from "../../../features/bookSlice";
-import BookItem from "../utils/book_item/BookItem";
+import { fetchBooks } from "../../features/bookSlice";
+import BookItem from "../../components/BookItem";
 
 const MyBooks = () => {
   const dispatch = useDispatch();

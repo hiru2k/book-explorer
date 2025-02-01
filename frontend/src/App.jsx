@@ -1,6 +1,6 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import MainPages from "./components/mainpages/Pages";
-import Header from "./components/header/Header";
+import MainPages from "./pages/Pages";
+import Header from "./components/Header";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";

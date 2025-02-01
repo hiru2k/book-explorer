@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../../features/userSlice";
-import useToast from "../../../hooks/useToast";
+import { loginUser } from "../../features/userSlice";
+import useToast from "../../hooks/useToast";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

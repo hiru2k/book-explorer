@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import BookItem from "../utils/book_item/BookItem";
+import BookItem from "../../components/BookItem";
 
 function DetailBook() {
   const { id } = useParams();

@@ -2,20 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import BookItem from "../utils/book_item/BookItem";
-import { fetchBooks } from "../../../features/bookSlice";
 
 function DetailBook() {
   const { id } = useParams();
-  const dispatch = useDispatch();
+
   const { books, loading } = useSelector((state) => state.book);
   const [detailBook, setDetailBook] = useState(null);
-
-  useEffect(() => {
-    if (!books.length) {
-      dispatch(fetchBooks({}));
-      // console.log("which fetch is this");
-    }
-  }, [dispatch, books.length]);
 
   useEffect(() => {
     if (id && books.length) {

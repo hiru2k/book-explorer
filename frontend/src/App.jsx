@@ -4,6 +4,7 @@ import Header from "./components/header/Header";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <div className="App">
             <Header />
             <MainPages />
+            <ToastContainer autoClose={1100} position="top-center" />
           </div>
         </Router>
       </PersistGate>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BookItem from "../utils/book_item/BookItem";
 import Filters from "../utils/book_item/Filters";
-import { fetchBooks, deleteBook } from "../../../features/BookSlice";
+import { fetchBooks, deleteBook } from "../../../features/bookSlice";
 
 function Books() {
   const dispatch = useDispatch();
@@ -10,26 +10,28 @@ function Books() {
   const { user, isLogged, accessToken } = useSelector((state) => state.user);
 
   console.log(books);
-  const [checkedBooks, setCheckedBooks] = useState(new Set());
+  // const [checkedBooks, setCheckedBooks] = useState(new Set());
 
   useEffect(() => {
     dispatch(fetchBooks({ page: 1, genre: "", token: accessToken }));
   }, [dispatch]);
 
   // Handle book deletion
-  const handleDeleteBook = async (id) => {
-    if (!isLogged) {
-      return alert(
-        "You are not authenticated or your access token is missing."
-      );
-    }
-    try {
-      await dispatch(deleteBook({ id, token: accessToken }));
-    } catch (error) {
-      console.error("Error deleting book:", error);
-      alert(error.message || "Error deleting book");
-    }
-  };
+  // const handleDeleteBook = async (id) => {
+  //   if (!isLogged) {
+  //     return alert(
+  //       "You are not authenticated or your access token is missing."
+  //     );
+  //   }
+  //   try {
+  //     // Dispatch the deleteBook action and unwrap the result
+  //     await dispatch(deleteBook({ id, token: accessToken })).unwrap();
+  //     alert("Book deleted successfully!"); // Success alert after deletion
+  //   } catch (error) {
+  //     console.error("Error deleting book:", error);
+  //     alert(error.message || "Error deleting book");
+  //   }
+  // };
 
   if (loading) return <div>Loading books...</div>;
 
@@ -79,16 +81,16 @@ function Books() {
             key={book._id}
             book={book}
             isLogged={isLogged}
-            deleteBook={handleDeleteBook}
-            checked={checkedBooks.has(book._id)}
-            onCheck={(checked) => {
-              setCheckedBooks((prev) => {
-                const newSet = new Set(prev);
-                if (checked) newSet.add(book._id);
-                else newSet.delete(book._id);
-                return newSet;
-              });
-            }}
+            // deleteBook={handleDeleteBook}
+            // checked={checkedBooks.has(book._id)}
+            // onCheck={(checked) => {
+            //   setCheckedBooks((prev) => {
+            //     const newSet = new Set(prev);
+            //     if (checked) newSet.add(book._id);
+            //     else newSet.delete(book._id);
+            //     return newSet;
+            //   });
+            // }}
           />
         ))}
       </div>

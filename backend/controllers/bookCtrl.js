@@ -90,7 +90,7 @@ const bookCtrl = {
       });
 
       await newBook.save();
-      return res.json({ msg: "Created the Book" });
+      return res.json({ msg: "Book is published successfully" });
     } catch (err) {
       // console.error("Error in getBooks:", err);
       return res.status(500).json({ msg: err.message });
@@ -106,7 +106,7 @@ const bookCtrl = {
 
       await book.deleteOne();
 
-      res.json({ msg: "Deleted the Book" });
+      res.json({ msg: "Book is deleted successfully" });
     } catch (err) {
       // console.error("Error in deleteBook:", err);
       return res.status(500).json({ msg: err.message });
@@ -139,7 +139,10 @@ const bookCtrl = {
         { new: true }
       );
 
-      return res.json({ msg: "Updated the Book", book: updatedBook });
+      return res.json({
+        msg: "Book is updated successfully",
+        book: updatedBook,
+      });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

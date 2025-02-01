@@ -24,15 +24,7 @@ const userCtrl = {
       });
       await newUser.save();
 
-      //create jsonwebtoken to authentication
-      const accesstoken = createAccessToken({ id: newUser._id });
-      const refreshtoken = createRefreshToken({ id: newUser._id });
-      res.cookie("refreshtoken", refreshtoken, {
-        httpOnly: true,
-        path: "/user/refresh_token",
-      });
-
-      return res.json({ accesstoken });
+      return res.json({ msg: "Successfully Registered" });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

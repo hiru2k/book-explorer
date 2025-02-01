@@ -7,6 +7,7 @@ import {
   updateBook,
 } from "../../../features/bookSlice";
 import { fetchGenres } from "../../../features/genreSlice";
+import useToast from "../../../hooks/useToast";
 
 const initialState = {
   book_id: "",
@@ -21,6 +22,7 @@ const initialState = {
 function CreateBook() {
   const [book, setBook] = useState(initialState);
   const dispatch = useDispatch();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -63,11 +65,11 @@ function CreateBook() {
     e.preventDefault();
 
     if (!book.genre) {
-      return alert("Please select a genre.");
+      return showToast("Plese select a genre", "warning");
     }
 
     if (!isLogged || !user) {
-      return alert("You are not an authenticated user or token is missing");
+      return showToast("restricted access", "warning");
     }
 
     // Set the 'author' to the logged-in user _id and include the genre ID
@@ -79,29 +81,32 @@ function CreateBook() {
 
     try {
       if (onEdit) {
-        await dispatch(
+        const resultUpdateAction = await dispatch(
           updateBook({
             id: book._id,
             bookData: updatedBook,
             token: accessToken,
           })
         ).unwrap();
+        showToast(
+          resultUpdateAction.msg || "Book published successfully!",
+          "success"
+        );
       } else {
-        await dispatch(
+        const resultCreateAction = await dispatch(
           createBook({ bookData: updatedBook, token: accessToken })
         ).unwrap();
+        showToast(resultCreateAction.msg, "success");
       }
 
       setBook(initialState);
       dispatch(fetchBooks({ page: 1, author: user._id, token: accessToken }));
       navigate("/books");
-      alert(
-        onEdit ? "Book updated successfully!" : "Book created successfully!"
-      );
     } catch (err) {
-      alert(err || "An unknown error occurred");
+      showToast(err || "An error occurred during publication.", "error");
     }
   };
+
   return (
     <div className="flex justify-center mt-10">
       <div className="bg-slate-200 p-8 rounded-lg shadow-md w-96">

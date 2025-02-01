@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../features/userSlice";
-
+import useToast from "../../../hooks/useToast";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
   const [user, setUser] = useState({
     email: "",
@@ -22,10 +23,11 @@ function Login() {
   const loginSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(loginUser(user));
-      navigate("/");
-    } catch (error) {
-      console.error("Login error:", error);
+      const resultAction = await dispatch(loginUser(user)).unwrap();
+      showToast(resultAction.msg || "Login successful!", "success");
+      navigate("/"); //avoid displaying not found page
+    } catch (err) {
+      showToast(err || "An error occurred during Login.", "error");
     }
   };
 
@@ -44,7 +46,7 @@ function Login() {
           <form onSubmit={loginSubmit}>
             <div className="flex flex-col gap-6 items-center">
               <h2 className="text-2xl font-bold mb-4">Login</h2>
-              {error && <p className="text-red-500">{error}</p>}{" "}
+
               <input
                 type="email"
                 name="email"

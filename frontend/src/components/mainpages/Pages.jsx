@@ -9,6 +9,7 @@ import DetailBook from "./books/DetailBook";
 import CreateBook from "./books/CreateBook";
 import Books from "./books/Books";
 import MyBooks from "./books/MyBooks";
+import "react-toastify/dist/ReactToastify.css";
 
 function Pages() {
   const { isLogged } = useSelector((state) => state.user);

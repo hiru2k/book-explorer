@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../api";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../../../features/userSlice";
+import useToast from "../../../hooks/useToast";
 
 function Register() {
+  const dispatch = useDispatch();
+  const { showToast } = useToast();
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -18,13 +23,15 @@ function Register() {
   const registerSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("/user/register", {
-        ...user,
-      });
-      localStorage.setItem("firstLogin", true);
-      navigate("/login");
+      const resultAction = await dispatch(registerUser(user)).unwrap();
+      showToast(
+        resultAction.msg || "Registration successful!",
+        "success",
+        navigate,
+        "/login"
+      );
     } catch (err) {
-      alert(err.response.data.msg);
+      showToast(err || "An error occurred during registration.", "error");
     }
   };
 

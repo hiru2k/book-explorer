@@ -3,23 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaTrash, FaEye, FaEdit } from "react-icons/fa";
 import { deleteBook } from "../../../../features/bookSlice";
+import useToast from "../../../../hooks/useToast";
 
 function BookItem({ book }) {
   const dispatch = useDispatch();
+  const { showToast } = useToast();
   const { isLogged, user, accessToken } = useSelector((state) => state.user);
 
   const handleDelete = () => {
     if (!isLogged || !user) {
-      return alert(
-        "You are not authenticated or your access token is missing."
-      );
+      return showToast("restricted access", "error");
     }
     try {
-      dispatch(deleteBook({ id: book._id, token: accessToken })).unwrap();
-      alert("Book deleted successfully!");
+      const resultAction = dispatch(
+        deleteBook({ id: book._id, token: accessToken })
+      ).unwrap();
+      showToast(resultAction.msg || "Book is deleted successfully!", "success");
     } catch (error) {
-      console.error("Error deleting book:", error);
-      alert(error.message || "Error deleting book");
+      showToast(err || "An error occurred during deletion.", "error");
     }
   };
 

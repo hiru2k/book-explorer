@@ -1,39 +1,9 @@
 const Books = require("../models/bookModel");
 const Users = require("../models/userModel");
 const Genre = require("../models/genreModel");
-
-//sort, filtering, paginating
-
-class APIfeatures {
-  constructor(query, queryString) {
-    this.query = query;
-    this.queryString = queryString;
-  }
-  filtering() {
-    const queryObj = { ...this.queryString };
-
-    const excludedFields = ["page", "sort", "limit"];
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(
-      /\b(gte|gt|lt|lte|regex)\b/g,
-      (match) => "$" + match
-    );
-
-    this.query.find(JSON.parse(queryStr));
-
-    return this;
-  }
-
-  paginating() {
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 9;
-    const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
-    return this;
-  }
-}
+const { validateAuthorAndGenre } = require("../utils/validation");
+const { handleErrors } = require("../utils/errorHandler");
+const APIfeatures = require("../utils/apiFeatures");
 
 const bookCtrl = {
   getBooks: async (req, res) => {
@@ -45,10 +15,7 @@ const bookCtrl = {
         query = query.where("author").equals(req.query.author);
       }
 
-      const features = new APIfeatures(query, req.query)
-        .filtering()
-
-        .paginating();
+      const features = new APIfeatures(query, req.query).filtering();
 
       const books = await features.query
         .populate("author", "name email") // Populate author details
@@ -60,8 +27,7 @@ const bookCtrl = {
         books,
       });
     } catch (err) {
-      //   console.error("Error in getBooks:", err);
-      return res.status(500).json({ msg: err.message });
+      handleErrors(res, err);
     }
   },
 
@@ -71,15 +37,10 @@ const bookCtrl = {
 
       const book = await Books.findOne({ book_id });
 
-      if (book)
-        return res.status(400).json({ msg: "This book already exists" });
+      if (book) return handleErrors(res, "This book already exists", 400);
 
-      // Check if the author (user) and genre exist
-      const user = await Users.findById(author);
-      if (!user) return res.status(400).json({ msg: "Author not found" });
-
-      const cat = await Genre.findById(genre);
-      if (!cat) return res.status(400).json({ msg: "Genre not found" });
+      const errors = await validateAuthorAndGenre(author, genre);
+      if (errors.length) return handleErrors(res, errors.join(", "), 400);
 
       const newBook = new Books({
         book_id,
@@ -92,24 +53,20 @@ const bookCtrl = {
       await newBook.save();
       return res.json({ msg: "Book is published successfully" });
     } catch (err) {
-      // console.error("Error in getBooks:", err);
-      return res.status(500).json({ msg: err.message });
+      handleErrors(res, err);
     }
   },
 
   deleteBook: async (req, res) => {
     try {
       const book = await Books.findById(req.params.id);
-      if (!book) {
-        return res.status(404).json({ msg: "Book not found" });
-      }
+      if (!book) return handleErrors(res, "Book not found", 404);
 
       await book.deleteOne();
 
       res.json({ msg: "Book is deleted successfully" });
     } catch (err) {
-      // console.error("Error in deleteBook:", err);
-      return res.status(500).json({ msg: err.message });
+      handleErrors(res, err);
     }
   },
 
@@ -118,33 +75,25 @@ const bookCtrl = {
       const { title, author, description, genre } = req.body;
 
       // Validate author and genre IDs before updating
-      if (author) {
-        const user = await Users.findById(author);
-        if (!user) return res.status(400).json({ msg: "Author not found" });
-      }
-
-      if (genre) {
-        const cat = await Genre.findById(genre);
-        if (!cat) return res.status(400).json({ msg: "Genre not found" });
-      }
+      const errors = await validateAuthorAndGenre(author, genre);
+      if (errors.length) return handleErrors(res, errors.join(", "), 400);
 
       const updatedBook = await Books.findByIdAndUpdate(
         req.params.id,
         {
           title: title.toLowerCase(),
-
           description,
           genre,
         },
         { new: true }
       );
-
+      if (!updatedBook) return handleErrors(res, "Book not found", 404);
       return res.json({
         msg: "Book is updated successfully",
         book: updatedBook,
       });
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      handleErrors(res, err);
     }
   },
 };

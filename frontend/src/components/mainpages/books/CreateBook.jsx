@@ -24,7 +24,7 @@ function CreateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { books } = useSelector((state) => state.book); // Destructure books
+  const { books, error } = useSelector((state) => state.book); // Destructure books
   const { genres } = useSelector((state) => state.genre);
   const { isLogged, user, accessToken } = useSelector((state) => state.user); // Access user and isLogged
 
@@ -32,8 +32,11 @@ function CreateBook() {
   const [onEdit, setOnEdit] = useState(false);
 
   useEffect(() => {
+    // if (error) {
+    //   alert(error);
+    // }
+
     dispatch(fetchGenres({ token: accessToken }));
-    // console.log(genres);
 
     if (id) {
       setOnEdit(true);
@@ -63,8 +66,12 @@ function CreateBook() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(user.token);
-    console.log(user);
-    console.log(isLogged);
+    // console.log(user);
+    // console.log(isLogged);
+    // Check if a genre is selected
+    if (!book.genre) {
+      return alert("Please select a genre.");
+    }
 
     if (!isLogged || !user) {
       // Check if user is logged in and token exists
@@ -86,21 +93,22 @@ function CreateBook() {
             bookData: updatedBook,
             token: accessToken,
           })
-        ); // Dispatch update action
+        ).unwrap();
       } else {
         await dispatch(
-          createBook({
-            bookData: updatedBook,
-            token: accessToken,
-          })
-        ); // Dispatch create action
+          createBook({ bookData: updatedBook, token: accessToken })
+        ).unwrap();
       }
 
       setBook(initialState);
       dispatch(fetchBooks({ page: 1, author: user._id, token: accessToken }));
       navigate("/books");
+      // Show success alert
+      alert(
+        onEdit ? "Book updated successfully!" : "Book created successfully!"
+      );
     } catch (err) {
-      alert(err.response.data.msg);
+      alert(err || "An unknown error occurred");
     }
   };
   return (

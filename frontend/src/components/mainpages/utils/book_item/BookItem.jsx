@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { FaTrash, FaEye, FaEdit } from "react-icons/fa"; // Import icons
-import { deleteBook } from "../../../../features/bookSlice"; // Import the Redux action
+import { deleteBook } from "../../../../features/BookSlice"; // Import the Redux action
 
 function BookItem({ book }) {
   // Remove unnecessary props
@@ -21,13 +21,21 @@ function BookItem({ book }) {
   //   // If you need to persist 'checked' state, you can add a redux action to update it.
   // };
 
+  // Handle book deletion
   const handleDelete = () => {
-    // console.log(user);
-    // console.log(accesstoken);
-    if (!user || !isLogged) {
-      return alert("You are not authenticated or token is missing.");
+    if (!isLogged || !user) {
+      return alert(
+        "You are not authenticated or your access token is missing."
+      );
     }
-    dispatch(deleteBook({ id: book._id, token: accessToken })); // Dispatch Redux delete action
+    try {
+      // Dispatch the deleteBook action and unwrap the result
+      dispatch(deleteBook({ id: book._id, token: accessToken })).unwrap();
+      alert("Book deleted successfully!"); // Success alert after deletion
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      alert(error.message || "Error deleting book");
+    }
   };
 
   // Show delete and edit buttons only if the logged-in user is the author of the book

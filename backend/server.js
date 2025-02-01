@@ -1,10 +1,11 @@
 require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { connectDB } = require("./config/db");
 
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -14,24 +15,17 @@ app.use("/user", require("./routers/userRouter"));
 app.use("/api", require("./routers/genreRouter"));
 app.use("/api", require("./routers/bookRouter"));
 
-// connect to mongodb
-const connectDB = async () => {
+// Start the server
+const startServer = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    await connectDB();
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT, () => {
+      console.log(`Server is up and running on port ${PORT}`);
     });
-    console.log("Connected to MongoDB");
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-    process.exit(1); // Exit process on connection failure
+    console.error("Error starting server:", error);
   }
 };
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log("server is up and running", PORT);
-});
-
-connectDB();
+startServer();

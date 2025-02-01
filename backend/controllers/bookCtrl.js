@@ -25,16 +25,7 @@ class APIfeatures {
 
     return this;
   }
-  sorting() {
-    if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(",").join(" ");
 
-      this.query = this.query.sort(sortBy);
-    } else {
-      this.query = this.query.sort("createdAt");
-    }
-    return this;
-  }
   paginating() {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1 || 9;
@@ -56,7 +47,7 @@ const bookCtrl = {
 
       const features = new APIfeatures(query, req.query)
         .filtering()
-        .sorting()
+
         .paginating();
 
       const books = await features.query

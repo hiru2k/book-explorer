@@ -7,7 +7,7 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLogged, loading, error } = useSelector((state) => state.user);
+  const { loading, error } = useSelector((state) => state.user);
 
   const [user, setUser] = useState({
     email: "",
@@ -23,7 +23,7 @@ function Login() {
     e.preventDefault();
     try {
       await dispatch(loginUser(user));
-      navigate("/"); // Navigate after successful login
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error);
     }

@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../api";
 
-// Async Thunks for fetching books (with filtering, pagination, etc.)
 export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
   async ({ page = 1, genre = "", author = "", token }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
         `/api/books?limit=${page * 35}${genre ? `&genre=${genre}` : ""}${
-          author ? `&author=${author}` : "" // Fetch books for specific author if provided
+          author ? `&author=${author}` : ""
         }`,
         {
           headers: { Authorization: token },
@@ -21,30 +20,26 @@ export const fetchBooks = createAsyncThunk(
   }
 );
 
-// Async Thunk for creating a book
 export const createBook = createAsyncThunk(
   "book/createBook",
-  async ({ bookData, token, userId }, { rejectWithValue }) => {
+  async ({ bookData, token }, { rejectWithValue }) => {
     try {
-      // Add logged-in user's ID as author and selected genre ID to book data
       const bookWithDetails = {
         ...bookData,
-        author: bookData.author, // Correct reference
-        genre: bookData.genre, // Selected genre ID
+        author: bookData.author,
+        genre: bookData.genre,
       };
-      // console.log("sdsdsdsdsd");
-      console.log(token);
+
       const res = await axiosInstance.post("/api/books", bookWithDetails, {
         headers: { Authorization: token },
       });
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.msg || "An error occurred"); // Pass error message as a string
+      return rejectWithValue(error.response?.data?.msg || "An error occurred");
     }
   }
 );
 
-// Async Thunk for updating a book
 export const updateBook = createAsyncThunk(
   "book/updateBook",
   async ({ id, bookData, token }, { rejectWithValue }) => {
@@ -59,7 +54,6 @@ export const updateBook = createAsyncThunk(
   }
 );
 
-// Async Thunk for deleting a book
 export const deleteBook = createAsyncThunk(
   "book/deleteBook",
   async ({ id, token }, { rejectWithValue }) => {
@@ -67,7 +61,7 @@ export const deleteBook = createAsyncThunk(
       const res = await axiosInstance.delete(`/api/books/${id}`, {
         headers: { Authorization: token },
       });
-      return id; // Return the deleted book ID
+      return id;
     } catch (error) {
       return rejectWithValue(error.response.data.msg);
     }

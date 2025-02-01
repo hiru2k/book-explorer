@@ -3,12 +3,12 @@ import userReducer from "./features/userSlice";
 import genreReducer from "./features/genreSlice";
 import bookReducer from "./features/bookSlice";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Local storage
+import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "book", "genre"], // Persist only the "user" slice
+  whitelist: ["user", "book", "genre"], // Persist even relording
 };
 
 const rootReducer = combineReducers({

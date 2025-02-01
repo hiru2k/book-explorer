@@ -24,18 +24,14 @@ function CreateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { books, error } = useSelector((state) => state.book); // Destructure books
+  const { books } = useSelector((state) => state.book);
   const { genres } = useSelector((state) => state.genre);
-  const { isLogged, user, accessToken } = useSelector((state) => state.user); // Access user and isLogged
+  const { isLogged, user, accessToken } = useSelector((state) => state.user);
 
   console.log(accessToken);
   const [onEdit, setOnEdit] = useState(false);
 
   useEffect(() => {
-    // if (error) {
-    //   alert(error);
-    // }
-
     dispatch(fetchGenres({ token: accessToken }));
 
     if (id) {
@@ -65,24 +61,20 @@ function CreateBook() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(user.token);
-    // console.log(user);
-    // console.log(isLogged);
-    // Check if a genre is selected
+
     if (!book.genre) {
       return alert("Please select a genre.");
     }
 
     if (!isLogged || !user) {
-      // Check if user is logged in and token exists
       return alert("You are not an authenticated user or token is missing");
     }
 
     // Set the 'author' to the logged-in user _id and include the genre ID
     const updatedBook = {
       ...book,
-      author: user._id, // Automatically set author to logged-in user's ID
-      genre: book.genre, // Send the selected genre object ID
+      author: user._id,
+      genre: book.genre,
     };
 
     try {
@@ -103,7 +95,6 @@ function CreateBook() {
       setBook(initialState);
       dispatch(fetchBooks({ page: 1, author: user._id, token: accessToken }));
       navigate("/books");
-      // Show success alert
       alert(
         onEdit ? "Book updated successfully!" : "Book created successfully!"
       );

@@ -6,12 +6,8 @@ export const loginUser = createAsyncThunk(
   async (userData, { dispatch, rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/user/login", userData);
-      const accessToken = res.data.accesstoken; // Assuming the access token is in res.data.accessToken
-
-      localStorage.setItem("firstLogin", true); // Store login state in localStorage
-      //   console.log(localStorage.getItem("firstLogin"));
-      //   console.log("jhskhkjshkjhhhhhhhh");
-      // Fetch user data immediately after login
+      const accessToken = res.data.accesstoken;
+      localStorage.setItem("firstLogin", true);
       dispatch(fetchUser(accessToken));
       return { accessToken };
     } catch (err) {
@@ -20,7 +16,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Fetch User Data
 export const fetchUser = createAsyncThunk(
   "user/fetchUser",
   async (token, { rejectWithValue }) => {
@@ -36,7 +31,6 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
-// Logout User
 export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
   await axiosInstance.get("/user/logout");
   localStorage.removeItem("firstLogin");
@@ -62,7 +56,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.isLogged = true;
 
-        state.accessToken = action.payload.accessToken; // Store access token
+        state.accessToken = action.payload.accessToken;
         localStorage.setItem("accessToken", action.payload.accessToken);
       })
       .addCase(loginUser.rejected, (state, action) => {

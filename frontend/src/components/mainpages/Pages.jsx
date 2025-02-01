@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux"; // Import useSelector
-import { Routes, Route } from "react-router-dom"; // No need for Switch
-
+import { useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import NotFound from "./utils/not_found/NotFound";
@@ -10,26 +9,12 @@ import DetailBook from "./books/DetailBook";
 import CreateBook from "./books/CreateBook";
 import Books from "./books/Books";
 import MyBooks from "./books/MyBooks";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { fetchUser } from "../../features/userSlice"; // Import fetchUser action
 
 function Pages() {
-  const { isLogged } = useSelector((state) => state.user); // Access isLogged from Redux
-  // const dispatch = useDispatch();
-
-  // const accessToken = localStorage.getItem("accessToken");
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     dispatch(fetchUser(accessToken)); // Fetch user data if token exists
-  //   }
-  // }, [dispatch, accessToken]);
+  const { isLogged } = useSelector((state) => state.user);
 
   return (
     <Routes>
-      {" "}
-      {/* Use Routes instead of Switch */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={isLogged ? <NotFound /> : <Login />} />
       <Route

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { logoutUser } from "../../features/userSlice";
 
 function Header() {
-  const { isLogged, user } = useSelector((state) => state.user);
+  const { isLogged } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const loggedOut = () => {

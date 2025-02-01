@@ -1,27 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
-import { FaTrash, FaEye, FaEdit } from "react-icons/fa"; // Import icons
-import { deleteBook } from "../../../../features/BookSlice"; // Import the Redux action
+import { FaTrash, FaEye, FaEdit } from "react-icons/fa";
+import { deleteBook } from "../../../../features/bookSlice";
 
 function BookItem({ book }) {
-  // Remove unnecessary props
   const dispatch = useDispatch();
-
   const { isLogged, user, accessToken } = useSelector((state) => state.user);
 
-  const { books } = useSelector((state) => state.book); // Get the books array from redux
-
-  // const handleCheck = (id) => {
-  //   const updatedBooks = books.map((p) =>
-  //     p._id === id ? { ...p, checked: !p.checked } : p
-  //   );
-  //   // No need to dispatch an action here if checked is only used for UI state
-  //   // If you need to persist 'checked' state, you can add a redux action to update it.
-  // };
-
-  // Handle book deletion
   const handleDelete = () => {
     if (!isLogged || !user) {
       return alert(
@@ -29,9 +15,8 @@ function BookItem({ book }) {
       );
     }
     try {
-      // Dispatch the deleteBook action and unwrap the result
       dispatch(deleteBook({ id: book._id, token: accessToken })).unwrap();
-      alert("Book deleted successfully!"); // Success alert after deletion
+      alert("Book deleted successfully!");
     } catch (error) {
       console.error("Error deleting book:", error);
       alert(error.message || "Error deleting book");

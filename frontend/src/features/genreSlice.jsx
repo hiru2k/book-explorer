@@ -8,7 +8,6 @@ export const fetchGenres = createAsyncThunk(
       const res = await axiosInstance.get("/api/genre", {
         headers: { Authorization: token },
       });
-      //   console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response.data.msg);
@@ -19,13 +18,13 @@ export const fetchGenres = createAsyncThunk(
 const genreSlice = createSlice({
   name: "genre",
   initialState: {
-    genres: [], // stores the list of genres
-    loading: false, // indicates loading state for async actions
-    error: null, // stores error message (if any)
+    genres: [],
+    loading: false,
+    error: null,
   },
   reducers: {
     setGenre: (state, action) => {
-      state.genres = action.payload; // updates genres in state
+      state.genres = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -44,7 +43,5 @@ const genreSlice = createSlice({
   },
 });
 
-// Export the newly added actions
 export const { setGenre } = genreSlice.actions;
-
 export default genreSlice.reducer;

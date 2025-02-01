@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setGenreFilter, fetchBooks } from "../../../../features/BookSlice";
-import { fetchGenres } from "../../../../features/genreSlice"; // Import fetchGenres
+import { setGenreFilter, fetchBooks } from "../../../../features/bookSlice";
+import { fetchGenres } from "../../../../features/genreSlice";
 
 function Filters() {
   const dispatch = useDispatch();
-
   const genreFilter = useSelector((state) => state.book.genre);
-  const { genres } = useSelector((state) => state.genre); // Access genres from genreSlice
+  const { genres } = useSelector((state) => state.genre);
   const { accessToken } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchGenres({ token: accessToken })); // Dispatch fetchGenres when the component mounts
+    dispatch(fetchGenres({ token: accessToken }));
   }, [dispatch]);
 
   const handleGenreChange = (e) => {
@@ -23,7 +22,7 @@ function Filters() {
 
         token: accessToken,
       })
-    ); // Fetch books based on selected genre
+    );
   };
 
   return (

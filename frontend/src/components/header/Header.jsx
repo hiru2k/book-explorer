@@ -7,7 +7,7 @@ function Header() {
   const { isLogged } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const loggedOut = () => {
+  const handleLoggedOut = () => {
     dispatch(logoutUser());
   };
 
@@ -48,7 +48,7 @@ function Header() {
                 <li>
                   <Link
                     to="/"
-                    onClick={loggedOut}
+                    onClick={handleLoggedOut}
                     className="hover:text-yellow-400 transition-colors duration-300"
                   >
                     Logout

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BookItem from "../utils/book_item/BookItem";
 import Filters from "../utils/book_item/Filters";
-import { fetchBooks, deleteBook } from "../../../features/bookSlice";
+import { fetchBooks, deleteBook } from "../../../features/BookSlice";
 
 function Books() {
   const dispatch = useDispatch();
@@ -13,9 +13,7 @@ function Books() {
   const [checkedBooks, setCheckedBooks] = useState(new Set());
 
   useEffect(() => {
-    dispatch(
-      fetchBooks({ page: 1, genre: "", search: "", token: accessToken })
-    );
+    dispatch(fetchBooks({ page: 1, genre: "", token: accessToken }));
   }, [dispatch]);
 
   // Handle book deletion

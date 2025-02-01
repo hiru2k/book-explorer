@@ -4,15 +4,10 @@ import axiosInstance from "../api";
 // Async Thunks for fetching books (with filtering, pagination, etc.)
 export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
-  async (
-    { page = 1, genre = "", search = "", author = "", token },
-    { rejectWithValue }
-  ) => {
+  async ({ page = 1, genre = "", author = "", token }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
         `/api/books?limit=${page * 35}${genre ? `&genre=${genre}` : ""}${
-          search ? `&title[regex]=${search}` : ""
-        }${
           author ? `&author=${author}` : "" // Fetch books for specific author if provided
         }`,
         {
@@ -87,7 +82,7 @@ const bookSlice = createSlice({
     error: null,
     callback: false,
     genre: "",
-    search: "",
+
     page: 1,
     result: 0,
   },
@@ -95,9 +90,7 @@ const bookSlice = createSlice({
     setGenreFilter: (state, action) => {
       state.genre = action.payload;
     },
-    setSearchTerm: (state, action) => {
-      state.search = action.payload;
-    },
+
     setPage: (state, action) => {
       state.page = action.payload;
     },
@@ -161,6 +154,5 @@ const bookSlice = createSlice({
   },
 });
 
-export const { setGenreFilter, setSearchTerm, setPage, setCallback } =
-  bookSlice.actions;
+export const { setGenreFilter, setPage, setCallback } = bookSlice.actions;
 export default bookSlice.reducer;

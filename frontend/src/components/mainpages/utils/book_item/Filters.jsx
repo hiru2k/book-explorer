@@ -1,10 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setGenreFilter,
-  setSearchTerm,
-  fetchBooks,
-} from "../../../../features/bookSlice";
+import { setGenreFilter, fetchBooks } from "../../../../features/BookSlice";
 import { fetchGenres } from "../../../../features/genreSlice"; // Import fetchGenres
 
 function Filters() {
@@ -12,7 +8,6 @@ function Filters() {
 
   const genreFilter = useSelector((state) => state.book.genre);
   const { genres } = useSelector((state) => state.genre); // Access genres from genreSlice
-  const searchTerm = useSelector((state) => state.book.search);
   const { accessToken } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -25,23 +20,10 @@ function Filters() {
       fetchBooks({
         page: 1,
         genre: e.target.value,
-        search: searchTerm,
+
         token: accessToken,
       })
     ); // Fetch books based on selected genre
-  };
-
-  const handleSearchChange = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    dispatch(setSearchTerm(searchTerm));
-    dispatch(
-      fetchBooks({
-        page: 1,
-        genre: genreFilter,
-        search: searchTerm,
-        token: accessToken,
-      })
-    ); // Fetch books based on search term
   };
 
   return (
@@ -62,13 +44,6 @@ function Filters() {
           ))}
         </select>
       </div>
-      <input
-        type="text"
-        className="text-gray-700 border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
-        value={searchTerm}
-        placeholder="Enter the name for search"
-        onChange={handleSearchChange}
-      />
     </div>
   );
 }

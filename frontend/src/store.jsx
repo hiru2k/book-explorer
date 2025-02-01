@@ -1,14 +1,31 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./features/userSlice";
 import genreReducer from "./features/genreSlice";
 import bookReducer from "./features/bookSlice";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage"; // Local storage
 
-const store = configureStore({
-  reducer: {
-    user: userReducer,
-    genre: genreReducer,
-    book: bookReducer,
-  },
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["user", "book", "genre"], // Persist only the "user" slice
+};
+
+const rootReducer = combineReducers({
+  user: userReducer,
+  genre: genreReducer,
+  book: bookReducer,
 });
 
-export default store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+export const persistor = persistStore(store);
+export { store };

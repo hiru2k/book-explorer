@@ -16,15 +16,15 @@ import { fetchUser } from "../../features/userSlice"; // Import fetchUser action
 
 function Pages() {
   const { isLogged } = useSelector((state) => state.user); // Access isLogged from Redux
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const accessToken = localStorage.getItem("accessToken");
+  // const accessToken = localStorage.getItem("accessToken");
 
-  useEffect(() => {
-    if (accessToken) {
-      dispatch(fetchUser(accessToken)); // Fetch user data if token exists
-    }
-  }, [dispatch, accessToken]);
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     dispatch(fetchUser(accessToken)); // Fetch user data if token exists
+  //   }
+  // }, [dispatch, accessToken]);
 
   return (
     <Routes>

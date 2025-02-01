@@ -50,7 +50,9 @@ function DetailBook() {
                 <p className="text-md text-center font-medium underline text-gray-500">
                   Published Date:
                 </p>
-                <p>{new Date(detailBook.createdAt).toLocaleDateString()}</p>
+                <p>
+                  {new Date(detailBook.createdAt).toISOString().split("T")[0]}
+                </p>
               </div>
             </div>
           </div>

@@ -20,7 +20,10 @@ export const loginUser = createAsyncThunk(
     try {
       const res = await axiosInstance.post("/user/login", userData);
       const accessToken = res.data.accesstoken;
+
+      localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("firstLogin", true);
+
       dispatch(fetchUser(accessToken));
       return { accessToken };
     } catch (err) {
@@ -46,6 +49,7 @@ export const fetchUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
   await axiosInstance.get("/user/logout");
+  localStorage.removeItem("accessToken");
   localStorage.removeItem("firstLogin");
 });
 
@@ -56,14 +60,12 @@ const userSlice = createSlice({
     accessToken: null,
     user: null,
     loading: false,
-    error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -72,26 +74,20 @@ const userSlice = createSlice({
         state.accessToken = action.payload.accessToken;
         localStorage.setItem("accessToken", action.payload.accessToken);
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state) => {
         state.loading = false;
         state.isLogged = false;
-        state.error = action.payload;
       });
     builder
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loading = false;
         state.isLogged = false;
-        // state.accessToken = action.payload.accessToken;
-        // localStorage.setItem("accessToken", action.payload.accessToken);
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
-        console.log(state.error);
       });
 
     builder
@@ -107,7 +103,7 @@ const userSlice = createSlice({
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.isLogged = false;
       state.user = null;
-      localStorage.removeItem("accesstoken");
+      state.accessToken = null;
     });
   },
 });

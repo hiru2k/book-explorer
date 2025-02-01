@@ -73,12 +73,11 @@ const bookSlice = createSlice({
   initialState: {
     books: [],
     loading: false,
-    error: null,
-    callback: false,
+
     genre: "",
 
-    page: 1,
-    result: 0,
+    // page: 1,
+    // result: 0,
   },
   reducers: {
     setGenreFilter: (state, action) => {
@@ -86,64 +85,64 @@ const bookSlice = createSlice({
     },
 
     setPage: (state, action) => {
-      state.page = action.payload;
+      // state.page = action.payload;
     },
     setCallback: (state) => {
-      state.callback = !state.callback;
+      // state.callback = !state.callback;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchBooks.pending, (state) => {
       state.loading = true;
-      state.error = null;
+      // state.error = null;
     });
     builder.addCase(fetchBooks.fulfilled, (state, action) => {
       state.loading = false;
       state.books = action.payload.books;
-      state.result = action.payload.result;
+      // state.result = action.payload.result;
     });
     builder.addCase(fetchBooks.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      // state.error = action.payload;
     });
 
     builder.addCase(deleteBook.pending, (state) => {
       state.loading = true;
-      state.error = null;
+      // state.error = null;
     });
     builder.addCase(deleteBook.fulfilled, (state, action) => {
       state.loading = false;
       state.books = state.books.filter((book) => book._id !== action.payload);
-      state.callback = !state.callback;
+      // state.callback = !state.callback;
     });
     builder.addCase(deleteBook.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      // state.error = action.payload;
     });
     builder.addCase(createBook.pending, (state) => {
       state.loading = true;
-      state.error = null;
+      // state.error = null;
     });
     builder.addCase(createBook.fulfilled, (state) => {
       state.loading = false;
-      state.callback = !state.callback; // Trigger refetch in Books component
+      // state.callback = !state.callback; // Trigger refetch in Books component
     });
     builder.addCase(createBook.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      // state.error = action.payload;
     });
 
     builder.addCase(updateBook.pending, (state) => {
       state.loading = true;
-      state.error = null;
+      // state.error = null;
     });
     builder.addCase(updateBook.fulfilled, (state) => {
       state.loading = false;
-      state.callback = !state.callback; // Trigger refetch in Books component
+      // state.callback = !state.callback; // Trigger refetch in Books component
     });
     builder.addCase(updateBook.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      // state.error = action.payload;
     });
   },
 });

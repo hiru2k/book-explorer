@@ -1,6 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../api";
 
+export const registerUser = createAsyncThunk(
+  "user/registerUser",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/user/register", userData);
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Registration failed");
+    }
+  }
+);
+
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData, { dispatch, rejectWithValue }) => {
@@ -63,6 +76,22 @@ const userSlice = createSlice({
         state.loading = false;
         state.isLogged = false;
         state.error = action.payload;
+      });
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isLogged = false;
+        // state.accessToken = action.payload.accessToken;
+        // localStorage.setItem("accessToken", action.payload.accessToken);
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        console.log(state.error);
       });
 
     builder

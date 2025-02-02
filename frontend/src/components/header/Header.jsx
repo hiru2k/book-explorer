@@ -29,7 +29,6 @@ const Header = () => {
   return (
     <header className="bg-blue-900 text-white py-4 fixed top-0 left-0 w-full z-50">
       <div className="container mx-auto flex justify-between items-center px-4 relative">
-        {/* Logo */}
         <Link to="/" className="text-2xl font-semibold">
           කතුවරයා
         </Link>

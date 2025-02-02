@@ -1,9 +1,7 @@
-// src/actions/bookActions.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../apis/axiosInstance";
 import { BOOK_API } from "../../apis/bookApis";
 
-// Fetch Books
 export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
   async ({ page = 1, genre = "", author = "", token }, { rejectWithValue }) => {
@@ -23,7 +21,6 @@ export const fetchBooks = createAsyncThunk(
   }
 );
 
-// Create Book
 export const createBook = createAsyncThunk(
   "book/createBook",
   async ({ bookData, token }, { rejectWithValue }) => {
@@ -40,7 +37,6 @@ export const createBook = createAsyncThunk(
   }
 );
 
-// Update Book
 export const updateBook = createAsyncThunk(
   "book/updateBook",
   async ({ id, bookData, token }, { rejectWithValue }) => {
@@ -57,7 +53,6 @@ export const updateBook = createAsyncThunk(
   }
 );
 
-// Delete Book
 export const deleteBook = createAsyncThunk(
   "book/deleteBook",
   async ({ id, token }, { rejectWithValue }) => {

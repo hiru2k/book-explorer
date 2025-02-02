@@ -1,9 +1,7 @@
-// src/actions/genreActions.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../apis/axiosInstance";
 import { GENRE_API } from "../../apis/genreApis";
 
-// Fetch Genres
 export const fetchGenres = createAsyncThunk(
   GENRE_API.FETCH_GENRES,
   async ({ token }, { rejectWithValue }) => {

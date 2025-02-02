@@ -1,4 +1,3 @@
-// src/slices/genreSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchGenres } from "../actions/genreActions";
 
@@ -23,5 +22,4 @@ const genreSlice = createSlice({
   },
 });
 
-// export const { setGenre } = genreSlice.actions;
 export default genreSlice.reducer;

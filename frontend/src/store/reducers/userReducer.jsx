@@ -1,4 +1,3 @@
-// src/reducers/userReducer.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
   registerUser,

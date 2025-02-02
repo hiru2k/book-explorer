@@ -1,4 +1,3 @@
-// apiConstants.js
 const BOOK_BASE_URL = "/api/books";
 
 export const BOOK_API = {

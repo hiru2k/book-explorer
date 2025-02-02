@@ -63,6 +63,5 @@ const bookSlice = createSlice({
   },
 });
 
-// Correct export:
-export const { setGenreFilter } = bookSlice.actions; // Export action separately
-export default bookSlice.reducer; // Export reducer as default
+export const { setGenreFilter } = bookSlice.actions;
+export default bookSlice.reducer;

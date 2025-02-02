@@ -11,7 +11,7 @@ const MyBooks = () => {
 
   useEffect(() => {
     if (isLogged && user?._id) {
-      dispatch(fetchBooks({ author: user._id, token: accessToken })); // Fetch books using user._id
+      dispatch(fetchBooks({ author: user._id, token: accessToken }));
     }
   }, [dispatch, isLogged, user?._id]);
 

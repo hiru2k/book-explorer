@@ -1,9 +1,7 @@
-// src/actions/userActions.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../apis/axiosInstance";
 import { USER_API } from "../../apis/userApis";
 
-// Register User
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (userData, { rejectWithValue }) => {
@@ -16,7 +14,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Login User
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData, { dispatch, rejectWithValue }) => {
@@ -35,7 +32,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Fetch User Information
 export const fetchUser = createAsyncThunk(
   "user/fetchUser",
   async (token, { rejectWithValue }) => {
@@ -50,7 +46,6 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
-// Logout User
 export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
   await axiosInstance.get(USER_API.LOGOUT);
   localStorage.removeItem("accessToken");

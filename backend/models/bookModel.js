@@ -28,10 +28,6 @@ const bookSchema = new mongoose.Schema(
       ref: "Genre",
       required: true,
     },
-    checked: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,

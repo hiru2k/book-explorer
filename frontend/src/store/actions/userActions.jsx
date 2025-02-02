@@ -24,7 +24,8 @@ export const loginUser = createAsyncThunk(
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("firstLogin", true);
 
-      dispatch(fetchUser(accessToken));
+      dispatch(fetchUser());
+
       return { accessToken };
     } catch (err) {
       return rejectWithValue(err.response?.data?.msg || "Login failed");
@@ -34,11 +35,9 @@ export const loginUser = createAsyncThunk(
 
 export const fetchUser = createAsyncThunk(
   "user/fetchUser",
-  async (token, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get(USER_API.FETCH_USER, {
-        headers: { Authorization: token },
-      });
+      const res = await axiosInstance.get(USER_API.FETCH_USER);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.msg || "Failed to fetch user");

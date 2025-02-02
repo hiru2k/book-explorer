@@ -4,13 +4,12 @@ import { BOOK_API } from "../../apis/bookApis";
 
 export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
-  async ({ page = 1, genre = "", author = "", token }, { rejectWithValue }) => {
+  async ({ page = 1, genre = "", author = "" }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
         `${BOOK_API.FETCH_BOOKS}?limit=${page * 35}${
           genre ? `&genre=${genre}` : ""
-        }${author ? `&author=${author}` : ""}`,
-        { headers: { Authorization: token } }
+        }${author ? `&author=${author}` : ""}`
       );
       return res.data;
     } catch (error) {
@@ -23,11 +22,9 @@ export const fetchBooks = createAsyncThunk(
 
 export const createBook = createAsyncThunk(
   "book/createBook",
-  async ({ bookData, token }, { rejectWithValue }) => {
+  async ({ bookData }, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post(BOOK_API.CREATE_BOOK, bookData, {
-        headers: { Authorization: token },
-      });
+      const res = await axiosInstance.post(BOOK_API.CREATE_BOOK, bookData);
       return res.data;
     } catch (error) {
       return rejectWithValue(
@@ -39,11 +36,9 @@ export const createBook = createAsyncThunk(
 
 export const updateBook = createAsyncThunk(
   "book/updateBook",
-  async ({ id, bookData, token }, { rejectWithValue }) => {
+  async ({ id, bookData }, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.put(BOOK_API.UPDATE_BOOK(id), bookData, {
-        headers: { Authorization: token },
-      });
+      const res = await axiosInstance.put(BOOK_API.UPDATE_BOOK(id), bookData);
       return res.data;
     } catch (error) {
       return rejectWithValue(
@@ -55,11 +50,9 @@ export const updateBook = createAsyncThunk(
 
 export const deleteBook = createAsyncThunk(
   "book/deleteBook",
-  async ({ id, token }, { rejectWithValue }) => {
+  async ({ id }, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(BOOK_API.DELETE_BOOK(id), {
-        headers: { Authorization: token },
-      });
+      await axiosInstance.delete(BOOK_API.DELETE_BOOK(id));
       return id;
     } catch (error) {
       return rejectWithValue(

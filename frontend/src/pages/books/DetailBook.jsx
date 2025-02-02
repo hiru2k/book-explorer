@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import BookItem from "../../components/BookItem";
+import BookItem from "../../components/books/BookItem";
 
 function DetailBook() {
   const { id } = useParams();
@@ -20,7 +20,7 @@ function DetailBook() {
   if (!detailBook) return <p>Book not found.</p>;
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex mt-10 p-18 items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-screen-xl p-4">
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center justify-center">
@@ -44,7 +44,7 @@ function DetailBook() {
                 <p className="text-md text-center font-medium underline text-gray-500">
                   Author:
                 </p>
-                <p>{detailBook.author.name}</p>
+                <p>{detailBook.author?.name || "Anonymous"}</p>
               </div>
               <div className="flex items-center justify-center flex-row gap-2">
                 <p className="text-md text-center font-medium underline text-gray-500">

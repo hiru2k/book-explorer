@@ -7,10 +7,10 @@ import { fetchBooks } from "../../store/actions/bookActions";
 function Books() {
   const dispatch = useDispatch();
   const { books, loading } = useSelector((state) => state.book);
-  const { isLogged, accessToken } = useSelector((state) => state.user);
+  const { isLogged } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchBooks({ page: 1, genre: "", token: accessToken }));
+    dispatch(fetchBooks({ page: 1, genre: "" }));
   }, [dispatch]);
 
   if (loading) return <div>Loading books...</div>;

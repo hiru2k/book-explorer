@@ -6,12 +6,12 @@ import BookItem from "../../components/BookItem";
 
 const MyBooks = () => {
   const dispatch = useDispatch();
-  const { user, isLogged, accessToken } = useSelector((state) => state.user);
+  const { user, isLogged } = useSelector((state) => state.user);
   const { books, loading } = useSelector((state) => state.book);
 
   useEffect(() => {
     if (isLogged && user?._id) {
-      dispatch(fetchBooks({ author: user._id, token: accessToken }));
+      dispatch(fetchBooks({ author: user._id }));
     }
   }, [dispatch, isLogged, user?._id]);
 

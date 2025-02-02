@@ -8,16 +8,14 @@ import useToast from "../hooks/useToast";
 function BookItem({ book }) {
   const dispatch = useDispatch();
   const { showToast } = useToast();
-  const { isLogged, user, accessToken } = useSelector((state) => state.user);
+  const { isLogged, user } = useSelector((state) => state.user);
 
   const handleDelete = () => {
     if (!isLogged || !user) {
       return showToast("restricted access", "error");
     }
     try {
-      const resultAction = dispatch(
-        deleteBook({ id: book._id, token: accessToken })
-      ).unwrap();
+      const resultAction = dispatch(deleteBook({ id: book._id })).unwrap();
       showToast(resultAction.msg || "Book is deleted successfully!", "success");
     } catch (error) {
       showToast(err, "error");

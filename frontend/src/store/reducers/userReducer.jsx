@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   isLogged: false,
-  accessToken: null,
+
   user: null,
   loading: false,
 };
@@ -25,7 +25,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isLogged = true;
-        state.accessToken = action.payload.accessToken;
+
         localStorage.setItem("accessToken", action.payload.accessToken);
       })
       .addCase(loginUser.rejected, (state) => {
@@ -57,7 +57,6 @@ const userSlice = createSlice({
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.isLogged = false;
       state.user = null;
-      state.accessToken = null;
     });
   },
 });

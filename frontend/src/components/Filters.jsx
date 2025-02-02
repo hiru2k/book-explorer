@@ -8,7 +8,6 @@ function Filters() {
   const dispatch = useDispatch();
   const genreFilter = useSelector((state) => state.book.genre);
 
-  const { accessToken } = useSelector((state) => state.user);
   const { genres } = useGenres();
 
   const handleGenreChange = (e) => {
@@ -17,8 +16,6 @@ function Filters() {
       fetchBooks({
         page: 1,
         genre: e.target.value,
-
-        token: accessToken,
       })
     );
   };

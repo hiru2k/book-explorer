@@ -2,18 +2,14 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setGenreFilter } from "../store/reducers/bookReducer";
 import { fetchBooks } from "../store/actions/bookActions";
-
-import { fetchGenres } from "../store/actions/genreActions";
+import { useGenres } from "../context/GenreContext";
 
 function Filters() {
   const dispatch = useDispatch();
   const genreFilter = useSelector((state) => state.book.genre);
-  const { genres } = useSelector((state) => state.genre);
-  const { accessToken } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    dispatch(fetchGenres({ token: accessToken }));
-  }, [dispatch]);
+  const { accessToken } = useSelector((state) => state.user);
+  const { genres } = useGenres();
 
   const handleGenreChange = (e) => {
     dispatch(setGenreFilter(e.target.value));

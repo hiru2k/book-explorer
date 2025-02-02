@@ -1,8 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { logoutUser } from "../features/userSlice";
-
+import { logoutUser } from "../store/actions/userActions";
 function Header() {
   const { isLogged } = useSelector((state) => state.user);
   const dispatch = useDispatch();

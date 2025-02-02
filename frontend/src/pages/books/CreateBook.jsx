@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchBooks, createBook, updateBook } from "../../features/bookSlice";
-import { fetchGenres } from "../../features/genreSlice";
+
+import {
+  fetchBooks,
+  createBook,
+  updateBook,
+} from "../../store/actions/bookActions";
+import { fetchGenres } from "../../store/actions/genreActions";
+
 import useToast from "../../hooks/useToast";
 
 const initialState = {
@@ -99,7 +105,7 @@ function CreateBook() {
       dispatch(fetchBooks({ page: 1, author: user._id, token: accessToken }));
       navigate("/books");
     } catch (err) {
-      showToast(err || "An error occurred during publication.", "error");
+      showToast(err, "error");
     }
   };
 

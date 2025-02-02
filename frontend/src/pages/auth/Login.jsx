@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../features/userSlice";
+import { loginUser } from "../../store/actions/userActions";
 import useToast from "../../hooks/useToast";
 function Login() {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function Login() {
       showToast(resultAction.msg || "Login successful!", "success");
       navigate("/"); //avoid displaying not found page
     } catch (err) {
-      showToast(err || "An error occurred during Login.", "error");
+      showToast(err, "error");
     }
   };
 

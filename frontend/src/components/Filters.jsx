@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setGenreFilter, fetchBooks } from "../features/bookSlice";
-import { fetchGenres } from "../features/genreSlice";
+import { setGenreFilter } from "../store/reducers/bookReducer";
+import { fetchBooks } from "../store/actions/bookActions";
+
+import { fetchGenres } from "../store/actions/genreActions";
 
 function Filters() {
   const dispatch = useDispatch();

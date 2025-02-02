@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaTrash, FaEye, FaEdit } from "react-icons/fa";
-import { deleteBook } from "../features/bookSlice";
+import { deleteBook } from "../store/actions/bookActions";
 import useToast from "../hooks/useToast";
 
 function BookItem({ book }) {
@@ -20,7 +20,7 @@ function BookItem({ book }) {
       ).unwrap();
       showToast(resultAction.msg || "Book is deleted successfully!", "success");
     } catch (error) {
-      showToast(err || "An error occurred during deletion.", "error");
+      showToast(err, "error");
     }
   };
 

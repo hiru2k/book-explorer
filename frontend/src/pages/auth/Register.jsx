@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { registerUser } from "../../features/userSlice";
+import { registerUser } from "../../store/actions/userActions";
 import useToast from "../../hooks/useToast";
 
 function Register() {
@@ -30,7 +30,7 @@ function Register() {
         "/login"
       );
     } catch (err) {
-      showToast(err || "An error occurred during registration.", "error");
+      showToast(err, "error");
     }
   };
 

@@ -1,21 +1,13 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import userReducer from "./features/userSlice";
-import genreReducer from "./features/genreSlice";
-import bookReducer from "./features/bookSlice";
+import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import rootReducer from "./reducers/index.jsx";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "book", "genre"], // Persist even relording
+  whitelist: ["user", "book", "genre"],
 };
-
-const rootReducer = combineReducers({
-  user: userReducer,
-  genre: genreReducer,
-  book: bookReducer,
-});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -23,7 +15,9 @@ const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
     }),
 });
 

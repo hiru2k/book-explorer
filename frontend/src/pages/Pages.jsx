@@ -7,7 +7,7 @@ import NotFound from "./NotFound";
 import Home from "./home/Home";
 import DetailBook from "./books/DetailBook";
 import CreateBook from "./books/CreateBook";
-import Books from "./books/Books";
+import AllBooks from "./books/AllBooks";
 import MyBooks from "./books/MyBooks";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -34,8 +34,11 @@ function Pages() {
         path="/detail/:id"
         element={isLogged ? <DetailBook /> : <NotFound />}
       />
-      <Route path="/my-books" element={isLogged ? <MyBooks /> : <NotFound />} />
-      <Route path="/books" element={<Books />} />
+      <Route path="/my_books" element={isLogged ? <MyBooks /> : <NotFound />} />
+      <Route
+        path="/all_books"
+        element={isLogged ? <AllBooks /> : <NotFound />}
+      />
     </Routes>
   );
 }

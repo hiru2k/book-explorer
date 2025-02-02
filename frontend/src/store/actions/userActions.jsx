@@ -22,7 +22,6 @@ export const loginUser = createAsyncThunk(
       const accessToken = res.data.accesstoken;
 
       localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("firstLogin", true);
 
       dispatch(fetchUser());
 
@@ -48,5 +47,4 @@ export const fetchUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
   await axiosInstance.get(USER_API.LOGOUT);
   localStorage.removeItem("accessToken");
-  localStorage.removeItem("firstLogin");
 });

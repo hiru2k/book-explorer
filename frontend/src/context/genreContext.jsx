@@ -1,35 +1,18 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../apis/axiosInstance";
+import useFetchGenres from "../hooks/useFetchGenres";
 
 const GenreContext = createContext();
+
 export const useGenres = () => useContext(GenreContext);
 
 export const GenreProvider = ({ children }) => {
-  const [genres, setGenres] = useState([]);
-  const [loading, setLoading] = useState(false);
   const { accessToken } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    const fetchGenres = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get("/api/genre");
-        setGenres(response.data);
-      } catch (error) {
-        console.error("Error fetching genres:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (accessToken) {
-      fetchGenres();
-    }
-  }, [accessToken]);
+  const { genres, loading, error } = useFetchGenres(accessToken);
 
   return (
-    <GenreContext.Provider value={{ genres, loading }}>
+    <GenreContext.Provider value={{ genres, loading, error }}>
       {children}
     </GenreContext.Provider>
   );

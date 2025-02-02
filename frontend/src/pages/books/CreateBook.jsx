@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -7,7 +7,8 @@ import {
   createBook,
   updateBook,
 } from "../../store/actions/bookActions";
-import { fetchGenres } from "../../store/actions/genreActions";
+// import { fetchGenres } from "../../store/actions/genreActions";
+import { useGenres } from "../../context/GenreContext";
 
 import useToast from "../../hooks/useToast";
 
@@ -24,20 +25,18 @@ const initialState = {
 function CreateBook() {
   const [book, setBook] = useState(initialState);
   const dispatch = useDispatch();
+  const { genres } = useGenres();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const { id } = useParams();
 
   const { books } = useSelector((state) => state.book);
-  const { genres } = useSelector((state) => state.genre);
-  const { isLogged, user, accessToken } = useSelector((state) => state.user);
+  // const { genres } = useSelector((state) => state.genre);
+  const { isLogged, user } = useSelector((state) => state.user);
 
-  console.log(accessToken);
   const [onEdit, setOnEdit] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchGenres({ token: accessToken }));
-
     if (id) {
       setOnEdit(true);
       const existingBook = books.find((prod) => prod._id === id);
@@ -87,7 +86,6 @@ function CreateBook() {
           updateBook({
             id: book._id,
             bookData: updatedBook,
-            token: accessToken,
           })
         ).unwrap();
         showToast(
@@ -96,13 +94,13 @@ function CreateBook() {
         );
       } else {
         const resultCreateAction = await dispatch(
-          createBook({ bookData: updatedBook, token: accessToken })
+          createBook({ bookData: updatedBook })
         ).unwrap();
         showToast(resultCreateAction.msg, "success");
       }
 
       setBook(initialState);
-      dispatch(fetchBooks({ page: 1, author: user._id, token: accessToken }));
+      dispatch(fetchBooks({ page: 1, author: user._id }));
       navigate("/books");
     } catch (err) {
       showToast(err, "error");

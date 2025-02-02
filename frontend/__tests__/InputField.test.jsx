@@ -68,7 +68,7 @@ describe("InputField Component", () => {
     );
 
     const inputElement = screen.getByRole("textbox");
-    expect(inputElement).toBeTruthy(); // Check if the input element is present
-    expect(inputElement.disabled).toBe(true); // Check if the input is disabled using the `disabled` property
+    expect(inputElement).toBeTruthy();
+    expect(inputElement.disabled).toBe(true);
   });
 });

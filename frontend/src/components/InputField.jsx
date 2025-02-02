@@ -10,8 +10,11 @@ const InputField = ({
   disabled = false,
 }) => (
   <div className="w-full">
-    <label className="text-sm font-medium text-gray-700">{label}</label>
+    <label htmlFor={name} className="text-sm font-medium text-gray-700">
+      {label}
+    </label>
     <input
+      id={name} // Adding id here so it matches the label's htmlFor
       type={type}
       name={name}
       value={value}

@@ -19,12 +19,12 @@ install dependencies- yarn install
 setup environmenet variables
 run - yarn start or npm start
 
-````bash
+```bash
 # Install dependencies
 yarn install
 
 # setup environmenet variables
-```env
+
 MONGODB_URL=<your_mongodb_connection_string>
 ACCESS_TOKEN_SECRET=<your_jwt_access_token_secret>
 REFRESH_TOKEN_SECRET=<your_jwt_refresh_token_secret>
@@ -34,22 +34,22 @@ NODE_ENV=<app_running_environment>
 # run app
 yarn start
 
-````
+```
 
 ### **3️⃣ Frontend Setup (React, Redux, Tailwind CSS)**
 
-````bash
+```bash
 # Install  dependencies
 yarn install
 
 # setup environmenet variables
-```env
+
 VITE_API_BASE_URL=<backend_url>
 
 # run app
 yarn dev
 
-````
+```
 
 ## 🚀 Features
 

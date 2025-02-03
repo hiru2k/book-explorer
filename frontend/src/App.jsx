@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store";
 import { ToastContainer } from "react-toastify";
-import { GenreProvider } from "./context/GenreContext";
+import { GenreProvider } from "./context/genreContext";
 
 function App() {
   return (

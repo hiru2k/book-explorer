@@ -38,7 +38,7 @@ function DetailBook() {
                 <p className="text-md text-center font-medium underline text-gray-700">
                   Genre:
                 </p>
-                <p>{detailBook.genre.name}</p>
+                <p>{detailBook.genre?.name || "Genre Unavailable"}</p>
               </div>
               <div className="flex items-center justify-center flex-row gap-2">
                 <p className="text-md text-center font-medium underline text-gray-500">
@@ -64,7 +64,7 @@ function DetailBook() {
               {books
                 .filter(
                   (book) =>
-                    book.genre.name === detailBook.genre.name &&
+                    book.genre?.name === detailBook?.genre?.name &&
                     book._id !== detailBook._id
                 )
                 .map((book) => (

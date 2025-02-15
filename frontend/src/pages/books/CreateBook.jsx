@@ -9,6 +9,8 @@ import {
 import { useGenres } from "../../context/GenreContext";
 import useToast from "../../hooks/useToast";
 import Form from "../../components/books/Form";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const initialState = {
   book_id: "",
@@ -16,11 +18,9 @@ const initialState = {
   description:
     "Books for every reader. Find inspiration, knowledge, and entertainment in our extensive library.",
   genre: "",
-  _id: "",
 };
 
 function CreateBook() {
-  const [book, setBook] = useState(initialState);
   const dispatch = useDispatch();
   const { genres } = useGenres();
   const { showToast } = useToast();
@@ -30,106 +30,78 @@ function CreateBook() {
   const { isLogged, user } = useSelector((state) => state.user);
   const [onEdit, setOnEdit] = useState(false);
 
+  const validationSchema = Yup.object().shape({
+    book_id: Yup.string().required("Required"),
+    title: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
+    genre: Yup.string().required("Required"),
+  });
+
+  const formik = useFormik({
+    initialValues: initialState,
+    validationSchema,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (!isLogged || !user) {
+        return showToast("Restricted access", "warning");
+      }
+
+      const updatedBook = { ...values, author: user._id, genre: values.genre };
+
+      try {
+        let resultAction;
+        if (onEdit) {
+          resultAction = await dispatch(
+            updateBook({ id: id, bookData: updatedBook })
+          ).unwrap();
+          showToast(
+            resultAction.msg || "Book updated successfully!",
+            "success"
+          );
+        } else {
+          resultAction = await dispatch(
+            createBook({ bookData: updatedBook })
+          ).unwrap();
+          showToast(resultAction.msg, "success");
+        }
+
+        formik.resetForm();
+        dispatch(fetchBooks({ page: 1, author: user._id }));
+        navigate("/my_books");
+      } catch (err) {
+        showToast(err, "error");
+      }
+    },
+  });
+
   useEffect(() => {
     if (id) {
       setOnEdit(true);
       const existingBook = books.find((prod) => prod._id === id);
       if (existingBook) {
-        setBook({
-          ...existingBook,
+        formik.setValues({
+          book_id: existingBook.book_id,
+          title: existingBook.title,
+          description: existingBook.description,
           genre: existingBook.genre._id,
         });
       }
     } else {
       setOnEdit(false);
-      setBook(initialState);
+      formik.resetForm();
     }
-  }, [id, books]);
-
-  const handleChangeInput = (e) => {
-    const { name, value } = e.target;
-    setBook({ ...book, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!book.genre) {
-      return showToast("Please select a genre", "warning");
-    }
-    if (!isLogged || !user) {
-      return showToast("Restricted access", "warning");
-    }
-    const updatedBook = { ...book, author: user._id, genre: book.genre };
-
-    try {
-      if (onEdit) {
-        const resultUpdateAction = await dispatch(
-          updateBook({ id: book._id, bookData: updatedBook })
-        ).unwrap();
-        showToast(
-          resultUpdateAction.msg || "Book updated successfully!",
-          "success"
-        );
-      } else {
-        const resultCreateAction = await dispatch(
-          createBook({ bookData: updatedBook })
-        ).unwrap();
-        showToast(resultCreateAction.msg, "success");
-      }
-      setBook(initialState);
-      dispatch(fetchBooks({ page: 1, author: user._id }));
-      navigate("/my_books");
-    } catch (err) {
-      showToast(err, "error");
-    }
-  };
-
-  const inputs = [
-    {
-      label: "Book ID",
-      type: "text",
-      name: "book_id",
-      value: book.book_id,
-      onChange: handleChangeInput,
-      required: true,
-      disabled: onEdit,
-    },
-    {
-      label: "Title",
-      type: "text",
-      name: "title",
-      value: book.title,
-      onChange: handleChangeInput,
-      required: true,
-    },
-    {
-      label: "Description",
-      type: "textarea",
-      name: "description",
-      value: book.description,
-      onChange: handleChangeInput,
-      required: true,
-    },
-  ];
-
-  const selectOptions = {
-    label: "Genre",
-    name: "genre",
-    value: book.genre,
-    onChange: handleChangeInput,
-    options: genres,
-    required: true,
-  };
+  }, [id, books, formik.setValues]);
 
   return (
     <div className="flex mt-10 justify-center items-center min-h-screen">
       <Form
-        onSubmit={handleSubmit}
-        inputs={inputs}
+        onSubmit={formik.handleSubmit}
+        formik={formik}
         buttonText={onEdit ? "Update Book" : "Publish Book"}
-        isLoading={false}
+        isLoading={formik.isSubmitting}
         title={onEdit ? "Edit Book" : "Publish Book"}
-        selectOptions={selectOptions}
+        genres={genres}
+        onEdit={onEdit}
       />
     </div>
   );

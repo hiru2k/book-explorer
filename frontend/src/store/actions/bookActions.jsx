@@ -4,12 +4,12 @@ import { BOOK_API } from "../../apis/bookApis";
 
 export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
-  async ({ page = 1, genre = "", author = "" }, { rejectWithValue }) => {
+  async ({ genre = "", author = "" }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
-        `${BOOK_API.FETCH_BOOKS}?limit=${page * 35}${
-          genre ? `&genre=${genre}` : ""
-        }${author ? `&author=${author}` : ""}`
+        `${BOOK_API.FETCH_BOOKS}?${genre ? `&genre=${genre}` : ""}${
+          author ? `&author=${author}` : ""
+        }`
       );
       return res.data;
     } catch (error) {

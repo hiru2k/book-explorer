@@ -33,5 +33,7 @@ const bookSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+bookSchema.index({ author: 1 }); // Index for author
+bookSchema.index({ genre: 1 }); // Index for genre
 
 module.exports = mongoose.model("Book", bookSchema);

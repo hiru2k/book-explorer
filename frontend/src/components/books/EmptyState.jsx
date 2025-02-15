@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const EmptyState = ({ message }) => (
   <div className="flex flex-col justify-center items-center min-h-40 p-6 bg-white border border-gray-300 rounded-lg shadow-md">
@@ -19,7 +20,9 @@ const EmptyState = ({ message }) => (
       </svg>
     </div>
     <p className="mt-4 text-lg font-semibold text-gray-700">{message}</p>
-    <p className="text-sm text-gray-500">Try adding new items</p>
+    <Link to="/create_book" className="text-blue-500 mt-4 hover:underline">
+      publish a book
+    </Link>
   </div>
 );
 

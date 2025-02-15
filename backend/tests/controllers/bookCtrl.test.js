@@ -1,206 +1,144 @@
-const mongoose = require("mongoose");
 const request = require("supertest");
-const app = require("../../server");
+const mongoose = require("mongoose");
+const app = require("../../server"); // Import your Express app
+const Book = require("../../models/bookModel");
+const User = require("../../models/userModel");
+const Genre = require("../../models/genreModel");
 const jwt = require("jsonwebtoken");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 
-// Mock mongoose connection
-jest.mock("mongoose", () => {
-  const actualMongoose = jest.requireActual("mongoose");
-
-  return {
-    ...actualMongoose,
-    connect: jest.fn().mockResolvedValue(),
-    model: jest.fn((name, schema) => ({
-      create: jest.fn(),
-      findOne: jest.fn(),
-      findById: jest.fn(),
-      findByIdAndDelete: jest.fn(),
-    })),
-    Schema: class {
-      constructor() {
-        this.Types = {
-          ObjectId: "mock-object-id",
-        };
-      }
-    },
-  };
-});
-
-const Users = mongoose.model("Users");
-const Genre = mongoose.model("Genre");
-const Books = mongoose.model("Books");
-
+let mongoServer;
+let token;
 let authorId;
 let genreId;
 
-const validToken = jwt.sign(
-  { id: "valid-user-id" },
-  process.env.ACCESS_TOKEN_SECRET
-);
-
 beforeAll(async () => {
-  Users.findOne.mockResolvedValueOnce({
-    _id: "test-author-id",
+  mongoServer = await MongoMemoryServer.create();
+  await mongoose.connect(mongoServer.getUri());
+
+  // Create a test user and genre
+  const user = await User.create({
     name: "Test Author",
     email: "test@example.com",
-    password: "password123",
+    password: "heifiuehr",
   });
+  const genre = await Genre.create({ name: "Fiction" });
 
-  Users.create.mockResolvedValueOnce({
-    _id: "test-author-id",
-    name: "Test Author",
-    email: "test@example.com",
-    password: "password123",
-  });
+  authorId = user._id;
+  genreId = genre._id;
 
-  authorId = "test-author-id";
-  genreId = "test-genre-id";
-
-  Books.create.mockResolvedValueOnce({
-    book_id: "book-1",
-    title: "Test Book",
-    author: authorId,
-    description: "A book about testing",
-    genre: genreId,
+  // Generate a JWT token for authentication
+  token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1h",
   });
 });
 
-describe("Book API", () => {
-  it("should return all books", async () => {
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
+describe("Book API Tests", () => {
+  let bookId;
+
+  test("Should create a book", async () => {
+    const res = await request(app)
+      .post("/api/books")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        book_id: "123",
+        title: "Test Book",
+        author: authorId,
+        description: "A test book description",
+        genre: genreId,
+      });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.msg).toBe("Book is published successfully");
+
+    const book = await Book.findOne({ book_id: "123" });
+    expect(book).not.toBeNull();
+    bookId = book._id;
+  });
+
+  test("Should fail to create a book with same id", async () => {
+    const res = await request(app)
+      .post("/api/books")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        book_id: "123",
+        title: "Test Book",
+        author: authorId,
+        description: "A test book description",
+        genre: genreId,
+      });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toContain("This book already exists");
+  });
+
+  test("Should get all books", async () => {
     const res = await request(app)
       .get("/api/books")
-      .set("Authorization", `Bearer ${validToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
-    expect(res.status).toBe(200);
-    expect(res.body.books).toBeInstanceOf(Array);
+    expect(res.statusCode).toBe(200);
     expect(res.body.books.length).toBeGreaterThan(0);
-    expect(res.body.books[0].author.name).toBe("Test Author");
-    expect(res.body.books[0].genre.name).toBe("Fiction");
   });
 
-  describe("POST /books", () => {
-    it("should create a new book", async () => {
-      const newBook = {
-        book_id: `book_${Date.now()}`,
-        title: "New Test Book",
-        author: authorId,
-        description: "New Test Description",
-        genre: genreId,
-      };
-
-      Books.create.mockResolvedValueOnce({
-        ...newBook,
-        _id: "new-book-id",
-      });
-
-      const res = await request(app)
-        .post("/api/books")
-        .set("Authorization", `Bearer ${validToken}`)
-        .send(newBook);
-
-      expect(res.status).toBe(200);
-      expect(res.body.msg).toBe("Book is published successfully");
-    });
-
-    it("should return an error if the book already exists", async () => {
-      const newBook = {
-        book_id: `book_${Date.now()}`,
-        title: "Existing Book",
-        author: authorId,
-        description: "Existing Test Description",
-        genre: genreId,
-      };
-
-      Books.findOne.mockResolvedValueOnce({
-        ...newBook,
-        _id: "existing-book-id",
-      });
-
-      const res = await request(app)
-        .post("/api/books")
-        .set("Authorization", `Bearer ${validToken}`)
-        .send(newBook);
-
-      expect(res.status).toBe(400);
-      expect(res.body.msg).toBe("This book already exists");
-    });
+  test("Should fail to get books without authentication", async () => {
+    const res = await request(app).get("/api/books");
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("token is not found");
   });
 
-  describe("PUT /books/:id", () => {
-    let bookId;
-
-    beforeAll(() => {
-      bookId = "book-id-to-update";
-    });
-
-    it("should update a book", async () => {
-      const updatedBook = {
-        title: "Updated Book",
-        description: "Updated Description",
-        genre: genreId,
-      };
-
-      Books.findById.mockResolvedValueOnce({
-        _id: bookId,
-        title: "Updated Book",
-        description: "Updated Description",
+  test("Should update a book", async () => {
+    const res = await request(app)
+      .put(`/api/books/${bookId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Updated Test Book",
+        description: "Updated description",
         genre: genreId,
       });
 
-      const res = await request(app)
-        .put(`/api/books/${bookId}`)
-        .set("Authorization", `Bearer ${validToken}`)
-        .send(updatedBook);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.msg).toBe("Book is updated successfully");
 
-      expect(res.status).toBe(200);
-      expect(res.body.msg).toBe("Book is updated successfully");
-      expect(res.body.book.title.toLowerCase()).toBe(
-        updatedBook.title.toLowerCase()
-      );
-    });
+    const updatedBook = await Book.findById(bookId);
+    expect(updatedBook.title).toBe("updated test book");
   });
 
-  describe("DELETE /books/:id", () => {
-    let bookId;
+  test("Should fail to update a non-existing book", async () => {
+    const fakeId = new mongoose.Types.ObjectId();
+    const res = await request(app)
+      .put(`/api/books/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ title: "Nonexistent Book" });
 
-    beforeAll(() => {
-      bookId = "book-id-to-delete";
-    });
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Book not found");
+  });
 
-    it("should delete a book", async () => {
-      Books.findById.mockResolvedValueOnce({
-        _id: bookId,
-        title: "Book to Delete",
-        author: authorId,
-        description: "Description to Delete",
-        genre: genreId,
-      });
+  test("Should delete a book", async () => {
+    const res = await request(app)
+      .delete(`/api/books/${bookId}`)
+      .set("Authorization", `Bearer ${token}`);
 
-      Books.findByIdAndDelete.mockResolvedValueOnce({
-        _id: bookId,
-        title: "Book to Delete",
-        author: authorId,
-        description: "Description to Delete",
-        genre: genreId,
-      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.msg).toBe("Book is deleted successfully");
 
-      const res = await request(app)
-        .delete(`/api/books/${bookId}`)
-        .set("Authorization", `Bearer ${validToken}`);
+    const deletedBook = await Book.findById(bookId);
+    expect(deletedBook).toBeNull();
+  });
 
-      expect(res.status).toBe(200);
-      expect(res.body.msg).toBe("Book is deleted successfully");
-    });
+  test("Should fail to delete a non-existing book", async () => {
+    const fakeId = new mongoose.Types.ObjectId();
+    const res = await request(app)
+      .delete(`/api/books/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`);
 
-    it("should return an error if the book is not found", async () => {
-      Books.findById.mockResolvedValueOnce(null);
-
-      const res = await request(app)
-        .delete(`/api/books/${bookId}`)
-        .set("Authorization", `Bearer ${validToken}`);
-
-      expect(res.status).toBe(404);
-      expect(res.body.msg).toBe("Book not found");
-    });
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Book not found");
   });
 });

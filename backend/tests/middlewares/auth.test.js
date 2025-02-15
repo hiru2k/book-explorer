@@ -1,63 +1,58 @@
 const request = require("supertest");
-const app = require("../../server");
+const express = require("express");
 const jwt = require("jsonwebtoken");
-const Books = require("../../models/bookModel");
+const auth = require("../../middlewares/auth");
 
-beforeAll(() => {
-  jest.setTimeout(10000);
+jest.mock("jsonwebtoken");
+
+const app = express();
+app.use(express.json());
+
+// Dummy route to test auth middleware
+app.get("/protected", auth, (req, res) => {
+  res.json({ msg: "Access granted", user: req.user });
 });
 
-jest.mock("jsonwebtoken", () => ({
-  ...jest.requireActual("jsonwebtoken"),
-  verify: jest.fn(),
-}));
-
-// Mock the Books model methods
-jest.mock("../../models/bookModel");
-
 describe("Auth Middleware", () => {
-  const validToken = jwt.sign(
-    { id: "valid-user-id" },
-    process.env.ACCESS_TOKEN_SECRET
-  );
+  let validToken;
+  let userPayload;
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  beforeAll(() => {
+    userPayload = { id: "12345" };
+    validToken = "valid-jwt-token";
   });
 
-  it("should allow access with a valid token", async () => {
-    jwt.verify.mockImplementation((token, secret, callback) => {
-      callback(null, { id: "valid-user-id" });
-    });
+  test("Should return 400 if token is missing", async () => {
+    const res = await request(app).get("/protected");
 
-    // Mock the find method of Books to avoid hitting the actual database
-    Books.find.mockResolvedValue([
-      { title: "Book 1", author: "Author 1" },
-      { title: "Book 2", author: "Author 2" },
-    ]);
-
-    const res = await request(app)
-      .get("/api/books")
-      .set("Authorization", `Bearer ${validToken}`);
-    expect(res.status).toBe(200);
-    expect(res.body.books).toHaveLength(2);
-  });
-
-  it("should deny access without a token", async () => {
-    const res = await request(app).get("/api/books");
-    expect(res.status).toBe(400);
+    expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("token is not found");
   });
 
-  it("should deny access with an invalid token", async () => {
+  test("Should return 400 if token is invalid", async () => {
     jwt.verify.mockImplementation((token, secret, callback) => {
-      callback(new Error("invalid token"), null);
+      callback(new Error("invalid Authorization"), null);
     });
 
     const res = await request(app)
-      .get("/api/books")
-      .set("Authorization", "Bearer invalid-token");
-    expect(res.status).toBe(400);
+      .get("/protected")
+      .set("Authorization", `Bearer invalid-token`);
+
+    expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("invalid Authorization");
+  });
+
+  test("Should pass user info in request if token is valid", async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      callback(null, userPayload);
+    });
+
+    const res = await request(app)
+      .get("/protected")
+      .set("Authorization", `Bearer ${validToken}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.msg).toBe("Access granted");
+    expect(res.body.user).toEqual(userPayload);
   });
 });

@@ -17,11 +17,9 @@ function Pages() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={isLogged ? <NotFound /> : <Login />} />
-      <Route
-        path="/register"
-        element={isLogged ? <NotFound /> : <Register />}
-      />
+
+      <Route path="/login" element={isLogged ? <Home /> : <Login />} />
+      <Route path="/register" element={isLogged ? <Home /> : <Register />} />
       <Route
         path="/create_book"
         element={isLogged ? <CreateBook /> : <NotFound />}

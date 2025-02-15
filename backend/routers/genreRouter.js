@@ -1,8 +1,8 @@
 const router = require("express").Router();
 
-const genreCtrl = require("../controllers/genreCtrl");
+const { getGenres } = require("../controllers/genreCtrl");
 const auth = require("../middlewares/auth");
 
-router.route("/genre").get(auth, genreCtrl.getGenres);
+router.route("/genre").get(auth, getGenres);
 
 module.exports = router;

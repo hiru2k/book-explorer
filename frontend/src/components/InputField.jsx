@@ -6,7 +6,8 @@ const InputField = ({
   name,
   value,
   onChange,
-  required,
+  onBlur,
+  error,
   disabled = false,
 }) => (
   <div className="w-full">
@@ -14,15 +15,20 @@ const InputField = ({
       {label}
     </label>
     <input
-      id={name} // Adding id here so it matches the label's htmlFor
+      id={name}
       type={type}
       name={name}
       value={value}
       onChange={onChange}
-      required={required}
+      onBlur={onBlur}
       disabled={disabled}
-      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        error
+          ? "border-red-500 focus:ring-red-500"
+          : "border-gray-300 focus:ring-blue-500"
+      }`}
     />
+    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}{" "}
   </div>
 );
 

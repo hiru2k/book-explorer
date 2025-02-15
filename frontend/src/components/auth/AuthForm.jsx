@@ -1,43 +1,37 @@
 import React from "react";
 import InputField from "../InputField";
 
-const AuthForm = ({ type, user, onChangeInput, onSubmit, loading }) => {
+const AuthForm = ({ type, formik, loading }) => {
   const fields =
     type === "login"
       ? [
-          { label: "Email", type: "email", name: "email", required: true },
-          {
-            label: "Password",
-            type: "password",
-            name: "password",
-            required: true,
-          },
+          { label: "Email", type: "email", name: "email" },
+          { label: "Password", type: "password", name: "password" },
         ]
       : [
-          { label: "Name", type: "text", name: "name", required: true },
-          { label: "Email", type: "email", name: "email", required: true },
-          {
-            label: "Password",
-            type: "password",
-            name: "password",
-            required: true,
-          },
+          { label: "Name", type: "text", name: "name" },
+          { label: "Email", type: "email", name: "email" },
+          { label: "Password", type: "password", name: "password" },
         ];
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col items-center gap-6">
+    <form
+      onSubmit={formik.handleSubmit}
+      className="flex flex-col items-center gap-6"
+    >
       <h2 className="text-2xl font-bold">
         {type === "login" ? "Login" : "Register"}
       </h2>
-      {fields.map(({ label, type, name, required }) => (
+      {fields.map(({ label, type, name }) => (
         <InputField
           key={name}
           label={label}
           type={type}
           name={name}
-          value={user[name]}
-          onChange={onChangeInput}
-          required={required}
+          value={formik.values[name]}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched[name] && formik.errors[name]}
         />
       ))}
       <button
